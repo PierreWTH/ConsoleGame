@@ -7,6 +7,9 @@ using ConsoleGame;
 int nbEmpire = AskNumberOfSoldier(Faction.Empire);
 int nbRebel = AskNumberOfSoldier(Faction.Rebel);
 
+Game game = new Game(nbEmpire, nbRebel);
+game.RunGame();
+
 
 static int AskNumberOfSoldier(Faction faction)
 {
