@@ -24,26 +24,47 @@ public class Game
     public void RunGame()
     {
         Console.WriteLine("La partie va commencer !");
-        
-        // Choose a random soldier
-        
-        var allSoldier = this.empireSoldier.Concat(this.rebelSoldier);
-        int index = random.Next(allSoldier.Count());
-        
-        Soldier shooter = allSoldier.ElementAt(index);
-        Soldier target = GetRandomSoldier(shooter.faction);
-        Console.WriteLine(target.health);
-        int damage = shooter.Attack(target);
-        
-        DisplayFightInfo(shooter, target, 3, damage);
 
+        Boolean remainEmpireSoldier = true;
+        Boolean remainRebelSoldier = true;
+        int turn = 0;
 
+        while (remainEmpireSoldier || remainRebelSoldier)
+        {
+            // Choose a random soldier
+            
+            remainEmpireSoldier = RebelsHasSoldier();
+            remainRebelSoldier = EmpireHasSoldier();
+            
+            var allSoldier = this.empireSoldier.Concat(this.rebelSoldier);
+            int index = random.Next(allSoldier.Count());
+            
+            Soldier shooter = allSoldier.ElementAt(index);
+            Soldier target = GetRandomSoldier(shooter.faction);
+            int damage = shooter.Attack(target);
+            
+            DisplayFightInfo(shooter, target, turn, damage);
 
+            turn++;
+        }
+
+        if (remainEmpireSoldier == false)
+        {
+            Console.WriteLine("Les rebelles ont gagné ! ");
+        }
+        else
+        {
+            Console.WriteLine("L'empire a gagné !");
+        }
+        
     }
 
     private Soldier GetRandomSoldier(Faction faction)
     {
         var selectedList = faction == Faction.Empire ? this.rebelSoldier : this.empireSoldier;
+        
+        // Remove dead soldiers
+        selectedList.RemoveAll(soldier => soldier.health == 0);
         int index = random.Next(selectedList.Count);
         return selectedList[index];
     }
@@ -70,8 +91,33 @@ public class Game
         }
         
         Console.WriteLine("Tour suivant... ");
+        Thread.Sleep(1000);
+    }
+
+    private Boolean RebelsHasSoldier()
+    {
+        List<int> health = new List<int>();
+        foreach (Soldier soldier in this.rebelSoldier)
+        {
+            health.Add(soldier.health);
+        }
+
+        Boolean remainSoldier = health.Distinct().Skip(0).Any();
+
+        return remainSoldier;
     }
     
-    
+    private Boolean EmpireHasSoldier()
+    {
+        List<int> health = new List<int>();
+        foreach (Soldier soldier in this.empireSoldier)
+        {
+            health.Add(soldier.health);
+        }
+
+        Boolean remainSoldier = health.Distinct().Skip(0).Any();
+
+        return remainSoldier;
+    }
     
 }

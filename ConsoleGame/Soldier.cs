@@ -25,9 +25,13 @@ public class Soldier
     public int Attack(Soldier target)
     {
         int percentage = random.Next(1,100);
-        int damage = this.damage / percentage * 100;
+        int soldierDamage = this.damage * (percentage / 100);
 
-        target.health -= damage;
+        target.health -= soldierDamage;
+        if (target.health <= 0)
+        {
+            target.health = 0;
+        }
 
         return damage;
     }
