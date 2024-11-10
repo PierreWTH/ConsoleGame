@@ -25,15 +25,14 @@ public class Soldier
     public int Attack(Soldier target)
     {
         int percentage = random.Next(1,100);
-        int soldierDamage = this.damage * (percentage / 100);
-
+        int soldierDamage = (int)(this.damage * (percentage / 100.0));
         target.health -= soldierDamage;
         if (target.health <= 0)
         {
             target.health = 0;
         }
 
-        return damage;
+        return soldierDamage;
     }
 
     private static string GenerateRandomReference(int lenght)
