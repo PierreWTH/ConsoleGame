@@ -29,23 +29,42 @@ public class Game
         Boolean remainRebelSoldier = true;
         int turn = 0;
 
+        Soldier favorite = this.GetRandomFavorite();
+        Console.WriteLine($"Le favori de la parti est le soldat {favorite.reference} de {favorite.faction} !");
+
         while (remainEmpireSoldier && remainRebelSoldier)
         {
             // Choose a random soldier
             
-            remainEmpireSoldier = RebelsHasSoldier();
-            remainRebelSoldier = EmpireHasSoldier();
+            remainEmpireSoldier = EmpireHasSoldier();
+            remainRebelSoldier = RebelsHasSoldier();
             
             if (remainEmpireSoldier == false)
             {
                 Console.WriteLine("****************");
                 Console.WriteLine("Il ne reste plus de soldats de l'empire. Les rebelles ont gagné ! ");
+                if (favorite.faction == Faction.Empire)
+                {
+                    Console.WriteLine("Le favori est mort");
+                }
+                else if(this.rebelSoldier.Contains(favorite))
+                {
+                    Console.WriteLine("Le favori rebelle est vivant !");
+                }
                 return; 
             }
             if(remainRebelSoldier == false)
             {
                 Console.WriteLine("****************");
                 Console.WriteLine("Il ne reste plus de soldats rebelles. L'empire a gagné !");
+                if (favorite.faction == Faction.Rebel)
+                {
+                    Console.WriteLine("Le favori est mort");
+                }
+                else if(this.empireSoldier.Contains(favorite))
+                {
+                    Console.WriteLine("Le favori de l'empire est vivant !");
+                }
                 return;
             }
 
@@ -102,7 +121,7 @@ public class Game
             Console.WriteLine($"Le soldat {target.reference} ({target.faction}) est mort... RIP.");
         }
         
-        Thread.Sleep(1000);
+        //Thread.Sleep(1000);
     }
 
     private Boolean RebelsHasSoldier()
@@ -125,5 +144,15 @@ public class Game
         }
 
         return health != 0;
+    }
+
+    private Soldier GetRandomFavorite()
+    {
+        var allSoldier = this.empireSoldier.Concat(this.rebelSoldier);
+        int index = random.Next(allSoldier.Count());
+        Soldier favorite = allSoldier.ElementAt(index);
+
+        return favorite;
+
     }
 }
