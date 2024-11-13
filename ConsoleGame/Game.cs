@@ -30,7 +30,12 @@ public class Game
         int turn = 0;
 
         Soldier favorite = this.GetRandomFavorite();
+        Soldier empireHero = this.GetHero(this.empireSoldier);
+        Soldier rebelHero = this.GetHero(this.rebelSoldier);
+        
         Console.WriteLine($"Le favori de la parti est le soldat {favorite.reference} de {favorite.faction} !");
+        Console.WriteLine($"Le héro de l'empire est le soldat {empireHero.reference} !");
+        Console.WriteLine($"Le héro rebelle est le soldat {rebelHero.reference} !");
 
         while (remainEmpireSoldier && remainRebelSoldier)
         {
@@ -81,6 +86,7 @@ public class Game
             int damage = shooter.Attack(target);
             
             DisplayFightInfo(shooter, target, turn, damage);
+            CheckHeroHealth(new Soldier[] { empireHero, rebelHero });
 
             turn++;
         }
@@ -121,7 +127,7 @@ public class Game
             Console.WriteLine($"Le soldat {target.reference} ({target.faction}) est mort... RIP.");
         }
         
-        //Thread.Sleep(1000);
+        Thread.Sleep(1000);
     }
 
     private Boolean RebelsHasSoldier()
@@ -154,5 +160,35 @@ public class Game
 
         return favorite;
 
+    }
+
+    private Soldier GetHero(List<Soldier> list)
+    {
+
+        int highScore = 0;
+        Soldier hero = null;
+        foreach (var soldier in list)
+        {
+            int score = (soldier.health + soldier.damage) * 10;
+
+            if (score > highScore)
+            {
+                highScore = score;
+                hero = soldier;
+            }
+
+        }
+        return hero;
+    }
+
+    private void CheckHeroHealth(Soldier[] heroes)
+    {
+        foreach (var hero in heroes)
+        {
+            if (hero.health == 0)
+            {
+                Console.WriteLine(hero.faction == Faction.Empire ? " Le héro de l'empire est mort " : "Le héro rebel est mort");
+            }
+        }
     }
 }
